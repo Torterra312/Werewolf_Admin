@@ -4,6 +4,7 @@ input.onButtonPressed(Button.A, function () {
 input.onButtonPressed(Button.AB, function () {
     radio.sendNumber(randint(1, Player_Amounts))
     OnOff = 1
+    radio.sendValue("Player Amount", Player_Amounts)
 })
 input.onButtonPressed(Button.B, function () {
     Player_Amounts += 1
@@ -13,8 +14,10 @@ let Player_Amounts = 0
 radio.setGroup(173)
 Player_Amounts = 0
 OnOff = 0
-if (OnOff == 1) {
-    basic.showString("Game Started")
-} else {
-    basic.showNumber(Player_Amounts)
-}
+basic.forever(function () {
+    if (OnOff == 1) {
+        basic.showString("Game Started")
+    } else {
+        basic.showNumber(Player_Amounts)
+    }
+})
