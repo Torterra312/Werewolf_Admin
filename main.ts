@@ -1,11 +1,4 @@
 radio.onReceivedNumber(function (receivedNumber) {
-    if (receivedNumber == Player) {
-        basic.showString("Werewolf")
-        TownWerewolf = 2
-    } else {
-        basic.showString("Town")
-        TownWerewolf = 1
-    }
     Game_On = 1
     Night_Time = 1
     if (receivedNumber == Player * 100) {
@@ -14,7 +7,11 @@ radio.onReceivedNumber(function (receivedNumber) {
 })
 input.onButtonPressed(Button.A, function () {
     if (Game_On == 0) {
-        Player_Amounts += -1
+        if (Player_Amounts == 1) {
+            Player_Option = 20
+        } else {
+            Player_Amounts += -1
+        }
     } else if (Player_Option == 1) {
         Player_Option = Player_Amounts
     } else {
@@ -23,12 +20,20 @@ input.onButtonPressed(Button.A, function () {
 })
 input.onButtonPressed(Button.AB, function () {
     if (Game_On == 0) {
-        Who_werewolf = randint(1, Player_Amounts)
-        radio.sendNumber(Who_werewolf)
-        Game_On = 1
-        radio.sendValue("Player Amount", Player_Amounts)
+        while (Who_werewolf == 10 || Who_werewolf == 0) {
+            if (Player_Amounts < 10) {
+                Who_werewolf = randint(1, Player_Amounts)
+            } else if (Player_Amounts >= 10) {
+                Who_werewolf = randint(1, Player_Amounts)
+            }
+            if (Who_werewolf != 10) {
+                radio.sendNumber(Who_werewolf)
+                Game_On = 1
+                radio.sendValue("Player Amount", Player_Amounts)
+            }
+        }
     } else if (Who_werewolf == 1) {
-        TownWerewolf = 1
+        TownWerewolf = 2
     } else if (Night_Time == 1) {
         Player_Choice = Player_Option
         radio.sendNumber(Player_Option * 100)
@@ -36,13 +41,17 @@ input.onButtonPressed(Button.AB, function () {
         Night_Time = 0
     } else {
         Player_Choice = Player_Option
-        radio.sendNumber(Player_Option * 10000)
+        radio.sendNumber(Player_Option * 1000)
         Player_Choice = 0
     }
 })
 input.onButtonPressed(Button.B, function () {
     if (Game_On == 0) {
-        Player_Amounts += 1
+        if (Player_Amounts == 20) {
+            Player_Option = 1
+        } else {
+            Player_Amounts += 1
+        }
     } else if (Player_Option == Player_Amounts) {
         Player_Option = 1
     } else {
@@ -50,7 +59,9 @@ input.onButtonPressed(Button.B, function () {
     }
 })
 radio.onReceivedValue(function (name, value) {
-    Player_Amounts = value
+    if (name == "Player Amounts") {
+        Player_Amounts += value
+    }
 })
 let Who_werewolf = 0
 let Player_Option = 0
